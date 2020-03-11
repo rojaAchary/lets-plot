@@ -378,7 +378,7 @@ object Option {
         const val FIXED = "fixed"
         const val MAP = "map"
         const val QUICK_MAP = "quickmap"  // todo
-        const val FLIP = "flip"      // todo
+        const val FLIP = "flip"
         const val EQUAL = "equal"    // todo
         const val POLAR = "polar"    // todo
         const val TRANS = "trans"    // todo

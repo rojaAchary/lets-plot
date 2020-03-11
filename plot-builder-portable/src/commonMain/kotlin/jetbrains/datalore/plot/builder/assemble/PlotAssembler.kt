@@ -6,11 +6,12 @@
 package jetbrains.datalore.plot.builder.assemble
 
 import jetbrains.datalore.base.gcommon.base.Preconditions.checkState
+import jetbrains.datalore.base.gcommon.collect.ClosedRange
 import jetbrains.datalore.plot.base.Aes
 import jetbrains.datalore.plot.base.Scale
 import jetbrains.datalore.plot.base.scale.Scales
 import jetbrains.datalore.plot.builder.GeomLayer
-import jetbrains.datalore.plot.builder.GeomLayerListUtil
+import jetbrains.datalore.plot.builder.GeomLayerListUtil.anyBound
 import jetbrains.datalore.plot.builder.Plot
 import jetbrains.datalore.plot.builder.PlotBuilder
 import jetbrains.datalore.plot.builder.coord.CoordProvider
@@ -33,6 +34,8 @@ class PlotAssembler private constructor(
     private var myAxisEnabled: Boolean
     private var myLegendsEnabled = true
     private var myInteractionsEnabled = true
+    //private val myPlotCoordHelper: PlotCoordHelper
+
 
     val layersByTile: List<List<GeomLayer>>
         get() = myLayersByTile
@@ -77,17 +80,11 @@ class PlotAssembler private constructor(
         else
             emptyList()
 
+        val coordReference = createPlotCoordReference(myCoordProvider)
+
         // share first X/Y scale among all layers
-        @Suppress("UNCHECKED_CAST")
-        var xScaleProto = GeomLayerListUtil.anyBoundXScale(myLayersByTile)
-        if (xScaleProto == null) {
-            xScaleProto = Scales.continuousDomain("x", Aes.X)
-        }
-        @Suppress("UNCHECKED_CAST")
-        var yScaleProto = GeomLayerListUtil.anyBoundYScale(myLayersByTile)
-        if (yScaleProto == null) {
-            yScaleProto = Scales.continuousDomain("y", Aes.Y)
-        }
+        val xScaleProto = anyBound(myLayersByTile, coordReference.horizontalAxis) ?: Scales.continuousDomain("x", coordReference.horizontalAxis.aes)
+        var yScaleProto = anyBound(myLayersByTile, coordReference.verticalAxis) ?: Scales.continuousDomain<Double>("y", coordReference.verticalAxis.aes)
 
         if (containsLiveMap) {
             // build 'live map' plot:
@@ -104,9 +101,9 @@ class PlotAssembler private constructor(
 
         // train scales
         val rangeByAes = PlotAssemblerUtil.rangeByNumericAes(myLayersByTile)
+        val xDomain: ClosedRange<Double>? = rangeByAes[coordReference.horizontalAxis.aes]
+        val yDomain: ClosedRange<Double>? = rangeByAes[coordReference.verticalAxis.aes]
 
-        val xDomain = rangeByAes.get(Aes.X)
-        val yDomain = rangeByAes[Aes.Y]
         checkState(xDomain != null, "X domain not defined")
         checkState(yDomain != null, "Y domain not defined")
         checkState(SeriesUtil.isFinite(xDomain!!.lowerEndpoint()), "X domain lower end: " + xDomain.lowerEndpoint())

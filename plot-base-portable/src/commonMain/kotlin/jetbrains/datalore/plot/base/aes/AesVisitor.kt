@@ -44,11 +44,7 @@ import jetbrains.datalore.plot.base.Aes.Companion.Z
 
 abstract class AesVisitor<T> {
     fun visit(aes: Aes<*>): T {
-        return if (aes.isNumeric) {
-            // Safe cast because all 'numeric' aesthetics are <Double>
-            @Suppress("UNCHECKED_CAST")
-            visitNumeric(aes as Aes<Double>)
-        } else visitIntern(aes)
+        return aes.asNumeric()?.let(this::visitNumeric) ?: visitIntern(aes)
     }
 
     /**

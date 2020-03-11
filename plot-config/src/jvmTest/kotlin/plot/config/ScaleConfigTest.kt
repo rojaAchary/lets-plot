@@ -105,12 +105,9 @@ class ScaleConfigTest {
     @Test
     fun numericIdentityMapper() {
         val input = listOf(2.0, 3.0, 5.0, 7.0, Double.NaN)
-        for (aes in Aes.values()) {
-            if (aes.isNumeric) {
-                @Suppress("UNCHECKED_CAST")
-                checkIdentityMappingNumeric(aes as Aes<Double>, input)
-            }
-        }
+        Aes.values()
+            .mapNotNull(Aes<*>::asNumeric)
+            .forEach{ numericAes -> checkIdentityMappingNumeric(numericAes, input)}
     }
 
     @Test

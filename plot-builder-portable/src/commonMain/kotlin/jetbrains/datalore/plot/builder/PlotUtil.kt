@@ -189,12 +189,9 @@ object PlotUtil {
         val minMax = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
 
         for (i in 0 until aesthetics.dataPointCount()) {
-            if (!locations.hasNext()) {
-                throw IllegalStateException("Index is out of bounds: $i for $locationAes")
-            }
-            if (!sizes.hasNext()) {
-                throw IllegalStateException("Index is out of bounds: $i for $sizeAes")
-            }
+            require(locations.hasNext()) {"Index is out of bounds: $i for $locationAes"}
+            require(sizes.hasNext()) { "Index is out of bounds: $i for $sizeAes" }
+
             val loc = locations.next()
             val size = sizes.next()
             if (isFinite(loc) && isFinite(size)) {
@@ -214,23 +211,20 @@ object PlotUtil {
         expandedMinMax[1] = max(value + expand, expandedMinMax[1])
     }
 
-    fun createLayerDryRunAesthetics(layer: GeomLayer): Aesthetics {
-        val dryRunMapperByAes = HashMap<Aes<Double>, (Double?) -> Double?>()
-        for (aes in layer.renderedAes()) {
-            if (aes.isNumeric) {
-                // safe cast: 'numeric' aes is always <Double>
-                @Suppress("UNCHECKED_CAST")
-                dryRunMapperByAes[aes as Aes<Double>] = Mappers.IDENTITY
-            }
-        }
+    fun createLayerDryRunAesthetics(layer: GeomLayer, horizontalAxis: AestheticAxis, verticalAxis: AestheticAxis): Aesthetics {
+        val dryRunMapperByAes = layer.renderedAes()
+            .mapNotNull(Aes<*>::asNumeric)
+            .associateWith { Mappers.IDENTITY }
 
-        val mappers = prepareLayerAestheticMappers(layer, dryRunMapperByAes)
+        val mappers = prepareLayerAestheticMappers(layer, dryRunMapperByAes, horizontalAxis, verticalAxis)
         return createLayerAesthetics(layer, mappers, emptyMap())
     }
 
     internal fun prepareLayerAestheticMappers(
         layer: GeomLayer,
-        sharedNumericMappers: Map<Aes<Double>, (Double?) -> Double?>
+        sharedNumericMappers: Map<Aes<Double>, (Double?) -> Double?>,
+        horizontalAxis: AestheticAxis = XAestheticAxis,
+        verticalAxis: AestheticAxis = YAestheticAxis
     ): Map<Aes<*>, (Double?) -> Any?> {
 
         val mappers = HashMap<Aes<*>, (Double?) -> Any?>(sharedNumericMappers)
@@ -238,10 +232,10 @@ object PlotUtil {
             var mapper: ((Double?) -> Any?)? = sharedNumericMappers[aes]
             if (mapper == null) {
                 // positional aes share their mappers
-                if (Aes.isPositionalX(aes)) {
-                    mapper = sharedNumericMappers[Aes.X]
-                } else if (Aes.isPositionalY(aes)) {
-                    mapper = sharedNumericMappers[Aes.Y]
+                if (aes in horizontalAxis) {
+                    mapper = sharedNumericMappers[horizontalAxis.aes]
+                } else if (aes in verticalAxis) {
+                    mapper = sharedNumericMappers[verticalAxis.aes]
                 }
             }
             if (mapper == null && layer.hasBinding(aes)) {

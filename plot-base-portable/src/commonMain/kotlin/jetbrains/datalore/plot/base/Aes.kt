@@ -20,6 +20,14 @@ class Aes<T> private constructor(val name: String, val isNumeric: Boolean = true
         values.add(this)
     }
 
+    fun asNumeric(): Aes<Double>? =
+        if (isNumeric) {
+            @Suppress("UNCHECKED_CAST")
+            this as Aes<Double>
+        } else {
+            null
+        }
+
     override fun toString(): String {
         return "aes '$name'"
     }

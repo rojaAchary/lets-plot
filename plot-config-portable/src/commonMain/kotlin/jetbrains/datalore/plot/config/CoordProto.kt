@@ -9,6 +9,7 @@ import jetbrains.datalore.plot.builder.coord.CoordProvider
 import jetbrains.datalore.plot.builder.coord.CoordProviders
 import jetbrains.datalore.plot.config.Option.CoordName.CARTESIAN
 import jetbrains.datalore.plot.config.Option.CoordName.FIXED
+import jetbrains.datalore.plot.config.Option.CoordName.FLIP
 import jetbrains.datalore.plot.config.Option.CoordName.MAP
 
 internal object CoordProto {
@@ -28,6 +29,7 @@ internal object CoordProto {
             CARTESIAN -> CoordProviders.cartesian(xLim, yLim)
             FIXED -> CoordProviders.fixed(options.getDouble(RATIO) ?: 1.0, xLim, yLim)
             MAP -> CoordProviders.map(xLim, yLim)
+            FLIP -> CoordProviders.flip(xLim, yLim)
             else -> throw IllegalArgumentException("Unknown coordinate system name: '$coordName'")
         }
     }

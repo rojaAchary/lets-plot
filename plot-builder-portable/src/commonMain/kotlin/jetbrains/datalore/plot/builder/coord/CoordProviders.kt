@@ -32,4 +32,11 @@ object CoordProviders {
             yLim
         )
     }
+
+    fun flip(
+        xLim: ClosedRange<Double>?,
+        yLim: ClosedRange<Double>?
+    ): CoordProvider {
+        return FlippedCoordProvider(xLim, yLim)
+    }
 }
