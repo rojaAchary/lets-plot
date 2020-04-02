@@ -10,4 +10,9 @@ actual object Base64 {
         // Decoder throws exception on '\n' in src, use MimeDecoder
         return java.util.Base64.getMimeDecoder().decode(s)
     }
+
+
+    actual fun encode(b: ByteArray): String {
+        return java.util.Base64.getMimeEncoder().encodeToString(b)
+    }
 }
