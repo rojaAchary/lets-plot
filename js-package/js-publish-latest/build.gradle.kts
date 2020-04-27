@@ -14,11 +14,10 @@ val bintray_key = bintrayBuildSettings?.get("key") as String?
 val artifact_version = project.extra["js_artifact_version"] as String
 
 if (bintray_user != null && bintray_key != null && !artifact_version.contains("dev")) {
-
     apply(plugin = "com.jfrog.bintray")
 
     configure<BintrayExtension> {
-        filesSpec = RecordingCopyTask()
+        filesSpec = tasks.create("filesSpec", RecordingCopyTask::class)
         filesSpec.rootSpec.apply {
             from("../build/distributions") {
                 include("*latest*")
