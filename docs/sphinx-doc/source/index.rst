@@ -46,8 +46,8 @@ Example
     .. toctree::
        :maxdepth: 1
 
-       pages/installation
-       pages/quickstart
+       _pages/installation
+       _pages/quickstart
        api
        gallery/index
 

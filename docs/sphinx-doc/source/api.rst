@@ -13,6 +13,8 @@ Plotting
 
 .. autosummary::
    :toctree: generated
+   :template: base.rst
+   :recursive:
 
    ggplot
    GGBunch

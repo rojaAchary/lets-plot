@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('..'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('./_ext'))
 
 import sphinx_bootstrap_theme
 
@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'jupyter_sphinx',
     'sphinx_gallery.gen_gallery',
+    'sphinx_gallery_jupyter',
     'sphinx_panels',
 ]
 
@@ -44,10 +45,17 @@ napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 napoleon_use_param = False
 
+examples_dirs = 'examples'
+
 sphinx_gallery_conf = {
-    'examples_dirs': '../examples',
+    'examples_dirs': examples_dirs,
     'gallery_dirs': 'gallery',
     'remove_config_comments': True,
+}
+
+sphinx_gallery_jupyter_conf = {
+    'notebooks_dirs': '../../examples/gallery',
+    'examples_dirs': examples_dirs,
 }
 
 panels_add_bootstrap_css = False
@@ -91,6 +99,12 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'css/style.css',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
