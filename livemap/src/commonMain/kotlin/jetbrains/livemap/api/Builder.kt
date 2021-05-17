@@ -38,6 +38,14 @@ import jetbrains.livemap.tiles.TileSystemProvider
 import jetbrains.livemap.ui.CursorService
 import kotlin.math.abs
 
+
+enum class SizeUnit {
+    // Size in screen coordinates - same dimension on all zooms
+    SCREEN,
+    // Size in world coordinates - scales on zoom
+    WORLD
+}
+
 @DslMarker
 annotation class LiveMapDsl
 
@@ -57,7 +65,7 @@ class LiveMapBuilder {
     var isLoopX: Boolean = true
     var isLoopY: Boolean = false
 
-    var mapLocationConsumer: (DoubleRectangle) -> Unit = { _ -> Unit }
+    var mapLocationConsumer: (DoubleRectangle) -> Unit = { _ -> }
 
     var attribution: String? = null
 
@@ -104,7 +112,7 @@ class LayersBuilder(
     val layerManager: LayerManager,
     val mapProjection: MapProjection,
     val mapRuler: MapRuler<World>,
-    val pointScaling: Boolean,
+    val sizeUnit: SizeUnit,
     val textMeasurer: TextMeasurer
 )
 

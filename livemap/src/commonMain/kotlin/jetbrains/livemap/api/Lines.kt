@@ -78,7 +78,7 @@ class LineBuilder(
             point != null -> myFactory.createStaticEntity("map_ent_s_line", point!!)
             else -> error("Can't create line entity. Coord is null.")
         }
-            .setInitializer { worldPoint ->
+            .setInitializer { worldPoint, _ ->
                 val line = createLineGeometry(worldPoint, horizontal, myMapProjection.mapRect)
                 val bbox = createLineBBox(worldPoint, strokeWidth, horizontal, myMapProjection.mapRect)
 

@@ -8,6 +8,7 @@ package jetbrains.livemap.geocoding
 import jetbrains.datalore.base.spatial.GeoRectangle
 import jetbrains.datalore.base.spatial.LonLatPoint
 import jetbrains.datalore.base.typedGeometry.Rect
+import jetbrains.livemap.LiveMapContext
 import jetbrains.livemap.core.ecs.ComponentsList
 import jetbrains.livemap.core.ecs.EcsComponent
 import jetbrains.livemap.projection.World
@@ -50,4 +51,4 @@ object WaitBboxComponent : EcsComponent
 
 class RegionBBoxComponent(val bbox: GeoRectangle) : EcsComponent
 
-class PointInitializerComponent(val worldPointInitializer: ComponentsList.(worldPoint: WorldPoint) -> Unit): EcsComponent
+class PointInitializerComponent(val worldPointInitializer: ComponentsList.(worldPoint: WorldPoint, context: LiveMapContext) -> Unit): EcsComponent

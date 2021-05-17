@@ -28,7 +28,7 @@ class ApplyPointSystem(
             .forEach { entity ->
 
                 entity.addComponents {
-                    entity.worldPointInitializer.invoke(this, myMapProjection.project(entity.point))
+                    entity.worldPointInitializer.invoke(this, myMapProjection.project(entity.point), context)
                 }
 
                 tagDirtyParentLayer(entity)

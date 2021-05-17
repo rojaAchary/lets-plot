@@ -8,10 +8,8 @@ package jetbrains.livemap.makegeometrywidget
 import jetbrains.datalore.base.spatial.LonLatPoint
 import jetbrains.datalore.base.values.Color.Companion.parseHex
 import jetbrains.livemap.LiveMapContext
-import jetbrains.livemap.api.MapEntityFactory
-import jetbrains.livemap.api.PathBuilder
-import jetbrains.livemap.api.PointBuilder
-import jetbrains.livemap.api.geometry
+import jetbrains.livemap.api.*
+import jetbrains.livemap.api.SizeUnit.SCREEN
 import jetbrains.livemap.camera.Viewport
 import jetbrains.livemap.core.animation.Animations.AnimationBuilder
 import jetbrains.livemap.core.ecs.AbstractSystem
@@ -58,7 +56,7 @@ class MakeGeometryWidgetSystem(
                 shape = 20
             }
             .build(
-                pointScaling = false,
+                sizeUnit = SCREEN,
                 animationBuilder = AnimationBuilder(500.0),
                 nonInteractive = true
             )

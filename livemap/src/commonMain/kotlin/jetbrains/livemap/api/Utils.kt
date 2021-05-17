@@ -7,6 +7,7 @@ package jetbrains.livemap.api
 
 import jetbrains.datalore.base.spatial.LonLatPoint
 import jetbrains.datalore.base.typedGeometry.*
+import jetbrains.livemap.LiveMapContext
 import jetbrains.livemap.core.ecs.ComponentsList
 import jetbrains.livemap.core.ecs.EcsEntity
 import jetbrains.livemap.core.ecs.addComponents
@@ -87,6 +88,6 @@ fun MapEntityFactory.createStaticEntity(name: String, point: LonLatPoint): EcsEn
         .add(LonLatComponent(point))
 
 
-internal fun EcsEntity.setInitializer(block: ComponentsList.(worldPoint: WorldPoint) -> Unit): EcsEntity {
+internal fun EcsEntity.setInitializer(block: ComponentsList.(worldPoint: WorldPoint, context: LiveMapContext) -> Unit): EcsEntity {
     return add(PointInitializerComponent(block))
 }

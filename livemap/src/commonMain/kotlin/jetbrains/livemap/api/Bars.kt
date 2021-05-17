@@ -8,6 +8,7 @@ import jetbrains.livemap.core.ecs.addComponents
 import jetbrains.livemap.core.rendering.layers.LayerGroup
 import jetbrains.livemap.placement.*
 import jetbrains.livemap.projection.Client
+import jetbrains.livemap.projection.WorldProjection
 import jetbrains.livemap.rendering.*
 import jetbrains.livemap.rendering.Renderers.BarRenderer
 import jetbrains.livemap.searching.BarLocatorHelper
@@ -18,7 +19,8 @@ import kotlin.math.sign
 
 @LiveMapDsl
 class Bars(
-    factory: MapEntityFactory
+    factory: MapEntityFactory,
+    val sizeUnit: SizeUnit
 ) {
     val barsFactory = BarsFactory(factory)
 }
@@ -32,10 +34,10 @@ fun LayersBuilder.bars(block: Bars.() -> Unit) {
         }
 
     Bars(
-        MapEntityFactory(layerEntity)
+        MapEntityFactory(layerEntity), sizeUnit
     ).apply {
         block()
-        barsFactory.produce()
+        barsFactory.produce(sizeUnit)
     }
 }
 
@@ -53,7 +55,7 @@ class BarsFactory(
         myItems.add(source)
     }
 
-    fun produce(): List<EcsEntity> {
+    fun produce(sizeUnit: SizeUnit): List<EcsEntity> {
         val maxAbsValue = myItems
             .asSequence()
             .mapNotNull(ChartSource::values)
@@ -70,14 +72,23 @@ class BarsFactory(
                     when {
                         source.point != null -> myFactory.createStaticEntityWithLocation("map_ent_s_bar", source.point!!)
                         else -> error("Can't create bar entity. Coord is null.")
-                    }.setInitializer { worldPoint ->
-                        source.layerIndex?.let { + IndexComponent(layerIndex = it, index = index) }
+                    }.setInitializer { worldPoint, context ->
+                        when (sizeUnit) {
+                            SizeUnit.SCREEN -> {
+                                + ScreenDimensionComponent().apply { dimension = barDimension }
+                            }
+                            SizeUnit.WORLD -> {
+                                + WorldDimensionComponent(WorldProjection(context.camera.zoom.toInt()).invert(barDimension))}
+                        }
+
+                        source.layerIndex?.let {
+                            + IndexComponent(layerIndex = it, index = index)
+                        }
                         + RendererComponent(BarRenderer())
                         + WorldOriginComponent(worldPoint)
                         + ScreenLoopComponent()
                         + ScreenOriginComponent()
                         + ScreenOffsetComponent().apply { offset = barOffset}
-                        + ScreenDimensionComponent().apply { dimension = barDimension }
                         + StyleComponent().apply {
                             setFillColor(color)
                             setStrokeColor(source.strokeColor)

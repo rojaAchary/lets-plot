@@ -24,6 +24,7 @@ import jetbrains.datalore.vis.canvas.DeltaTime
 import jetbrains.gis.geoprotocol.GeocodingService
 import jetbrains.livemap.Diagnostics.LiveMapDiagnostics
 import jetbrains.livemap.api.LayersBuilder
+import jetbrains.livemap.api.SizeUnit
 import jetbrains.livemap.camera.*
 import jetbrains.livemap.camera.CameraScale.CameraScaleEffectComponent
 import jetbrains.livemap.cells.CellLayerComponent
@@ -38,6 +39,7 @@ import jetbrains.livemap.config.DevParams.Companion.FRAGMENT_ACTIVE_DOWNLOADS_LI
 import jetbrains.livemap.config.DevParams.Companion.FRAGMENT_CACHE_LIMIT
 import jetbrains.livemap.config.DevParams.Companion.MICRO_TASK_EXECUTOR
 import jetbrains.livemap.config.DevParams.Companion.PERF_STATS
+import jetbrains.livemap.config.DevParams.Companion.POINT_SCALING
 import jetbrains.livemap.config.DevParams.Companion.RENDER_TARGET
 import jetbrains.livemap.config.DevParams.Companion.TILE_CACHE_LIMIT
 import jetbrains.livemap.config.DevParams.Companion.UPDATE_PAUSE_MS
@@ -342,13 +344,15 @@ class LiveMap(
             myLayerManager,
             myMapProjection,
             myMapRuler,
-            myDevParams.isSet(DevParams.POINT_SCALING),
+            when(myDevParams.isSet(POINT_SCALING))
+            {
+                true -> SizeUnit.WORLD
+                false -> SizeUnit.SCREEN
+            },
             TextMeasurer(myContext.mapRenderContext.canvasProvider.createCanvas(Vector.ZERO).context2d)
         )
 
-        layers.forEach {
-            layersBuilder.apply(it)
-        }
+        layers.forEach(layersBuilder::apply)
 
         if (myTileSystemProvider is VectorTileSystemProvider) {
             componentManager

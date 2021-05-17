@@ -21,7 +21,8 @@ import kotlin.math.PI
 
 @LiveMapDsl
 class Pies(
-    factory: MapEntityFactory
+    factory: MapEntityFactory,
+    val sizeUnit: SizeUnit
 ) {
     val piesFactory = PiesFactory(factory)
 }
@@ -35,7 +36,7 @@ fun LayersBuilder.pies(block: Pies.() -> Unit) {
         }
 
     Pies(
-        MapEntityFactory(layerEntity)
+        MapEntityFactory(layerEntity), sizeUnit
     ).apply {
         block()
         piesFactory.produce()
@@ -73,7 +74,7 @@ class PiesFactory(
                 when {
                     source.point != null -> myFactory.createStaticEntityWithLocation("map_ent_s_pie_sector", source.point!!)
                     else -> error("Can't create pieSector entity. Coord is null.")
-                }.setInitializer { worldPoint ->
+                }.setInitializer { worldPoint, _ ->
                     if (source.layerIndex != null) {
                         + IndexComponent(source.layerIndex!!, source.indices[i])
                     }

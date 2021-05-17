@@ -70,7 +70,7 @@ class TextBuilder(
             point != null -> myFactory.createStaticEntityWithLocation("map_ent_s_text", point!!)
             else -> error("Can't create text entity. Coord is null.")
         }
-            .setInitializer { worldPoint ->
+            .setInitializer { worldPoint, _ ->
                 + WorldOriginComponent(worldPoint)
                 + RendererComponent(TextRenderer())
                 + ScreenLoopComponent()

@@ -30,7 +30,7 @@ import jetbrains.livemap.searching.PointLocatorHelper
 class Points(
     val factory: MapEntityFactory,
     val mapProjection: MapProjection,
-    val pointScaling: Boolean,
+    val sizeUnit: SizeUnit,
     val animationBuilder: AnimationBuilder
 )
 
@@ -49,7 +49,7 @@ fun LayersBuilder.points(block: Points.() -> Unit) {
     Points(
         MapEntityFactory(layerEntity),
         mapProjection,
-        pointScaling,
+        sizeUnit,
         animationBuilder
     ).apply(block)
 
@@ -63,7 +63,7 @@ fun LayersBuilder.points(block: Points.() -> Unit) {
 fun Points.point(block: PointBuilder.() -> Unit) {
     PointBuilder(factory)
         .apply(block)
-        .build(pointScaling, animationBuilder)
+        .build(sizeUnit, animationBuilder)
 }
 
 @LiveMapDsl
@@ -84,7 +84,7 @@ class PointBuilder(
     var shape: Int = 1
 
     fun build(
-        pointScaling: Boolean,
+        sizeUnit: SizeUnit,
         animationBuilder: AnimationBuilder,
         nonInteractive: Boolean = false
     ): EcsEntity {
@@ -95,14 +95,14 @@ class PointBuilder(
                 point != null -> myFactory.createStaticEntityWithLocation("map_ent_s_point", point!!)
                 else -> error("Can't create point entity. Coord is null.")
             }.run {
-                setInitializer { worldPoint ->
+                setInitializer { worldPoint, _ ->
                     if (layerIndex != null && index != null) {
                         + IndexComponent(layerIndex!!, index!!)
                     }
 
                     + ShapeComponent().apply { shape = this@PointBuilder.shape }
                     + createStyle()
-                    + if (pointScaling) {
+                    + if (sizeUnit == SizeUnit.WORLD) {
                         WorldDimensionComponent(explicitVec(size, size))
                     } else {
                         ScreenDimensionComponent().apply {
