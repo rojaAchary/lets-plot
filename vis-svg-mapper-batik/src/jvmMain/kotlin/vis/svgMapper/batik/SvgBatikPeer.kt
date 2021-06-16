@@ -98,10 +98,7 @@ internal class SvgBatikPeer : SvgPlatformPeer {
         ensureSourceRegistered(element as SvgNode)
 
         val target = myMappingMap[element]!!.target
-        val bBox = (target as SVGLocatable).bBox
-        val bbox =
-            DoubleRectangle(bBox.x.toDouble(), bBox.y.toDouble(), bBox.width.toDouble(), bBox.height.toDouble())
-//        println(bbox)
-        return bbox
+        val bBox = (target as SVGLocatable).bBox ?: return DoubleRectangle(DoubleVector.ZERO, DoubleVector.ZERO)
+        return DoubleRectangle(bBox.x.toDouble(), bBox.y.toDouble(), bBox.width.toDouble(), bBox.height.toDouble())
     }
 }

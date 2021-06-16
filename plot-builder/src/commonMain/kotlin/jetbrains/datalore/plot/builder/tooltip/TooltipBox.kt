@@ -267,12 +267,19 @@ class TooltipBox(
                         }
                     }
 
+                    val lineHeight =
+                        if (valueBBox.dimension == DoubleVector.ZERO && labelBBox.dimension == DoubleVector.ZERO) {
+                            // Add empty space for an empty line (in Batik its bbox will be zero)
+                            H_CONTENT_PADDING
+                        } else {
+                            max(
+                                valueBBox.height + valueBBox.top,
+                                labelBBox.height + labelBBox.top
+                            )
+                        }
                     DoubleVector(
                         x = maxLineWidth,
-                        y = valueComponent.y().get()!! + max(
-                            valueBBox.height + valueBBox.top,
-                            labelBBox.height + labelBBox.top
-                        ) + LINE_INTERVAL
+                        y = valueComponent.y().get()!! + lineHeight + LINE_INTERVAL
                     )
                 })
                 .subtract(DoubleVector(0.0, LINE_INTERVAL)) // remove LINE_INTERVAL from last line
