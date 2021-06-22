@@ -7,8 +7,7 @@ package jetbrains.datalore.plot.config
 
 import jetbrains.datalore.plot.base.Aes
 import jetbrains.datalore.plot.builder.GeomLayer
-import jetbrains.datalore.plot.parsePlotSpec
-import jetbrains.datalore.plot.server.config.ServerSideTestUtil
+import jetbrains.datalore.plot.config.TestUtil.getSingleGeomLayer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,7 +54,7 @@ class ScaleOrderingTest {
 
     @Test
     fun default() {
-        val geomLayer = buildGeomLayer(makePlotSpec(""))
+        val geomLayer = getSingleGeomLayer(makePlotSpec(""))
         assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C", "A"))
         assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
     }
@@ -65,14 +64,14 @@ class ScaleOrderingTest {
         run {
             //ascending
             val orderingSettings = makeOrderingSettings("x", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("A", "B", "C"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
         }
         run {
             //descending
             val orderingSettings = makeOrderingSettings("x", null, -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "B", "A"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
         }
@@ -83,7 +82,7 @@ class ScaleOrderingTest {
         run {
             //ascending
             val orderingSettings = makeOrderingSettings("fill", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
 
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("1", "2", "3", "4"))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C", "A"))
@@ -91,7 +90,7 @@ class ScaleOrderingTest {
         run {
             //descending
             val orderingSettings = makeOrderingSettings("fill", null, -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
 
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "3", "2", "1"))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C", "A"))
@@ -103,14 +102,14 @@ class ScaleOrderingTest {
         run {
             //ascending
             val orderingSettings = makeOrderingSettings("x", "..count..", 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "A", "B"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
         }
         run {
             //descending
             val orderingSettings = makeOrderingSettings("x", "..count..", -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "A", "C"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
         }
@@ -122,7 +121,7 @@ class ScaleOrderingTest {
             //x descending - fill ascending
             val orderingSettings =
                 makeOrderingSettings("x", null, -1) + "," + makeOrderingSettings("fill", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "B", "A"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("1", "2", "3", "4"))
         }
@@ -130,7 +129,7 @@ class ScaleOrderingTest {
             //x descending - fill descending
             val orderingSettings =
                 makeOrderingSettings("x", null, -1) + "," + makeOrderingSettings("fill", null, -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "B", "A"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "3", "2", "1"))
         }
@@ -142,7 +141,7 @@ class ScaleOrderingTest {
             //ascending
             val orderingSettings =
                 makeOrderingSettings("x", "..count..", 1) + "," + makeOrderingSettings("fill", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "A", "B"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("1", "2", "3", "4"))
         }
@@ -150,7 +149,7 @@ class ScaleOrderingTest {
             //descending
             val orderingSettings =
                 makeOrderingSettings("x", "..count..", -1) + "," + makeOrderingSettings("fill", null, -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "A", "C"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "3", "2", "1"))
         }
@@ -161,14 +160,14 @@ class ScaleOrderingTest {
         val samplingPick = """{ "name": "pick", "n": 2 }"""
         run {
             // no ordering
-            val geomLayer = buildGeomLayer(makePlotSpec("", samplingPick))
+            val geomLayer = getSingleGeomLayer(makePlotSpec("", samplingPick))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
         }
         run {
             // Order x
             val orderingSettings = makeOrderingSettings("x", null, -1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings, samplingPick))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings, samplingPick))
 
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "B"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
@@ -177,7 +176,7 @@ class ScaleOrderingTest {
             // Order x and fill
             val orderingSettings =
                 makeOrderingSettings("x", null, -1) + "," + makeOrderingSettings("fill", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings, samplingPick))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings, samplingPick))
 
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "B"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("1", "2", "3", "4"))
@@ -185,7 +184,7 @@ class ScaleOrderingTest {
         run {
             // Order x by count
             val orderingSettings = makeOrderingSettings("x", "..count..", 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings, samplingPick))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings, samplingPick))
 
             assertScaleBreaks(geomLayer, Aes.X, listOf("C", "A"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "2", "3", "1"))
@@ -208,14 +207,14 @@ class ScaleOrderingTest {
 
         run {
             // No ordering.
-            val geomLayer = buildGeomLayer(makePlotSpec("", sampling))
+            val geomLayer = getSingleGeomLayer(makePlotSpec("", sampling))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "1"))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C"))
         }
         run {
             // Order x.
             val orderingSettings = makeOrderingSettings("x", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings, sampling))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings, sampling))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "1"))
             assertScaleBreaks(geomLayer, Aes.X, listOf("A", "B"))
         }
@@ -227,27 +226,20 @@ class ScaleOrderingTest {
 
         run {
             // Default - no ordering
-            val geomLayer = buildGeomLayer(makePlotSpec("", samplingGroup))
+            val geomLayer = getSingleGeomLayer(makePlotSpec("", samplingGroup))
             assertScaleBreaks(geomLayer, Aes.X, listOf("B", "C", "A"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "3"))
         }
         run {
             // Order x
             val orderingSettings = makeOrderingSettings("x", null, 1)
-            val geomLayer = buildGeomLayer(makePlotSpec(orderingSettings, samplingGroup))
+            val geomLayer = getSingleGeomLayer(makePlotSpec(orderingSettings, samplingGroup))
             assertScaleBreaks(geomLayer, Aes.X, listOf("A", "B", "C"))
             assertScaleBreaks(geomLayer, Aes.FILL, listOf("4", "3"))
         }
     }
 
     companion object {
-        private fun buildGeomLayer(spec: String): GeomLayer {
-            val plotOpts = parsePlotSpec(spec)
-            val transformed = ServerSideTestUtil.serverTransformWithoutEncoding(plotOpts)
-            val config = PlotConfigClientSide.create(transformed) {}
-            return PlotConfigClientSideUtil.createPlotAssembler(config).layersByTile.single().single()
-        }
-
         private fun assertScaleBreaks(
             layer: GeomLayer,
             aes: Aes<*>,
