@@ -9,10 +9,10 @@ plugins {
     id "groovy"   // add 'test' task
 }
 
-
 kotlin {
     jvm()
-    js() {
+
+    js {
         browser {}
     }
 

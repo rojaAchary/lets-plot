@@ -50,20 +50,20 @@ class PlotContainer(
             val geomBounds = plot.getGeomBounds(coord)
             tooltipLayer.showTooltips(coord, tooltipSpecs, geomBounds)
         }
-        reg(plot.mouseEventPeer.addEventHandler(MOUSE_MOVED, object : EventHandler<MouseEvent> {
-            override fun onEvent(event: MouseEvent) {
-                onMouseMoved(event)
-            }
-        }))
-        reg(plot.mouseEventPeer.addEventHandler(MOUSE_DRAGGED, object : EventHandler<MouseEvent> {
-            override fun onEvent(event: MouseEvent) {
-                tooltipLayer.hideTooltip()
-            }
-        }))
-        reg(plot.mouseEventPeer.addEventHandler(MOUSE_LEFT, object : EventHandler<MouseEvent> {
-            override fun onEvent(event: MouseEvent) {
-                tooltipLayer.hideTooltip()
-            }
-        }))
+//        reg(plot.mouseEventPeer.addEventHandler(MOUSE_MOVED, object : EventHandler<MouseEvent> {
+//            override fun onEvent(event: MouseEvent) {
+//                onMouseMoved(event)
+//            }
+//        }))
+//        reg(plot.mouseEventPeer.addEventHandler(MOUSE_DRAGGED, object : EventHandler<MouseEvent> {
+//            override fun onEvent(event: MouseEvent) {
+//                tooltipLayer.hideTooltip()
+//            }
+//        }))
+//        reg(plot.mouseEventPeer.addEventHandler(MOUSE_LEFT, object : EventHandler<MouseEvent> {
+//            override fun onEvent(event: MouseEvent) {
+//                tooltipLayer.hideTooltip()
+//            }
+//        }))
     }
 }
