@@ -13,3 +13,4 @@
 ### Fixed
 
 - Tooltips for discrete variables: add the dependence of the tooltip on the number of factors.
+- Zoom without clipping breaks tooltips [[#373](https://github.com/JetBrains/lets-plot/issues/373)].
